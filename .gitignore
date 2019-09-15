@@ -37,3 +37,7 @@ api/src/main/resources/config/application-dev\.properties
 logs/
 
 out/
+
+core/docs/
+
+core/libs/
