@@ -36,17 +36,6 @@ public class DataSourceConfig {
         return DataSourceBuilder.create().build();
     }
 
-    /****
-     * 配置数据源
-     * @return
-     */
-    @Bean(name = "tertiaryDataSource")
-    @Qualifier("tertiaryDataSource")
-    @ConfigurationProperties(prefix="spring.datasource.tertiary")
-    public DataSource tertiaryDataSource() {
-        return DataSourceBuilder.create().build();
-    }
-
     @Bean(name = "primaryJdbcTemplate")
     public JdbcTemplate primaryJdbcTemplate(
             @Qualifier("primaryDataSource") DataSource dataSource) {
@@ -56,12 +45,6 @@ public class DataSourceConfig {
     @Bean(name = "secondaryJdbcTemplate")
     public JdbcTemplate secondaryJdbcTemplate(
             @Qualifier("secondaryDataSource") DataSource dataSource) {
-        return new JdbcTemplate(dataSource);
-    }
-
-    @Bean(name = "tertiaryJdbcTemplate")
-    public JdbcTemplate tertiaryJdbcTemplate(
-            @Qualifier("tertiaryDataSource") DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }
 }
