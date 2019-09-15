@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+    default-lazy-init="true">
+
+    <!-- Shiro -->
+    <bean class="com.juggle.juggle.framework.security.DefaultShiroRealm" id="shiroDbRealm" />
+    
+    <bean class="org.apache.shiro.cache.MemoryConstrainedCacheManager" id="shiroCacheManager" />
+    
+    <bean class="org.apache.shiro.web.mgt.DefaultWebSecurityManager" id="securityManager" >
+        <property name="realm" ref="shiroDbRealm"/>
+        <property name="cacheManager" ref="shiroCacheManager"/>
+    </bean>
+
+    <bean id="authService" class="com.juggle.juggle.primary.auth.service.AuthService" ></bean>
+
+    <bean class="org.apache.shiro.spring.web.ShiroFilterFactoryBean" id="shiroFilter" >
+        <property name="securityManager" ref="securityManager" />
+        <property name="loginUrl" value="/login" />
+        <property name="successUrl" value="/index" />
+        <property name="unauthorizedUrl" value="/unauthorized" />
+        <property name="filters">
+            <map>
+                <entry key="auth">
+                    <bean class="com.juggle.juggle.common.filter.AuthFilter">
+                        <property name="authService" ref="authService" />
+                    </bean>
+                </entry>
+                <entry key="anon">
+                    <bean class="com.juggle.juggle.framework.security.AnonymousFilter" >
+                        <property name="userId" value="default" />
+                        <property name="username" value="default" />
+                    </bean>
+                </entry>
+            </map>
+        </property>
+        <property name="filterChainDefinitions">
+            <value>
+                /v1/app/** = auth
+                /v1/account/** = auth
+                /v1/approval/** = auth
+                /v1/auth/updatePwd = auth
+                /v1/shop/shopOrder/** = auth
+                /v1/shop/shopExpress/** = auth
+                /v1/taobao/taobaoOrder/** = auth
+                /v1/taobao/taobaoExtra/tpwdCreate = auth
+                /v1/recharge/phoneBill/** = auth
+                /v1/** = anon
+                /** = anon
+            </value>
+        </property>
+    </bean>
+
+</beans>
